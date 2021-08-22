@@ -95,13 +95,25 @@ namespace ENSEK_EnergySupplierClient.Controllers
 
         // POST: Accounts/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public async Task<ActionResult> EditTestAccount(TestAccount ta)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                if (ta != null)
+                {
+                    using (var client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                        var response = await client.PutAsJsonAsync(baseurl + "api/Meter/PutTestAccount", ta);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction("GetAllTestAccounts");
+                        }
+                        return View(ta);
+                    }
+                }
+                return View();
             }
             catch
             {
@@ -110,6 +122,7 @@ namespace ENSEK_EnergySupplierClient.Controllers
         }
 
         // GET: Accounts/Delete/5
+        
         public async Task<ActionResult> DeleteTestAccount(int accountId)
         {
             using (var client = new HttpClient())
@@ -124,18 +137,27 @@ namespace ENSEK_EnergySupplierClient.Controllers
                 }
             }
             return View();
-        }            
-    
+        }
+
 
         // POST: Accounts/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public async Task<ActionResult> DeleteTestAccountPOST(int accountId)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = await client.DeleteAsync(baseurl + "api/Meter/DeleteTestAccount?accountId="+accountId);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("GetAllTestAccounts");
+                    }
+                }// TODO: Add delete logic here
+                return View();
+                
             }
             catch
             {

@@ -36,10 +36,11 @@
         </dd>
 
     </dl>
-
-    @using (Html.BeginForm()) {
+   
+    @using (Html.BeginForm("DeleteTestAccountPOST", "Accounts", FormMethod.Post, new { accountId = Model.AccountId }))
+    {
         @Html.AntiForgeryToken()
-
+        @Html.HiddenFor(model => model.AccountId);
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
             @Html.ActionLink("Back to List", "GetAllTestAccounts")

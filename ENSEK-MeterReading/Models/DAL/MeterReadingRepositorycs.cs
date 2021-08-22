@@ -15,9 +15,17 @@ namespace ENSEK_MeterReading.Models.DAL
             {
                 using (var dbcontext = new ENSEKMeterReadingEntities())
                 {
-                    var ta = dbcontext.Test_Accounts.Where(s => s.AccountId == accountId).FirstOrDefault();
-                    dbcontext.Entry(ta).State = System.Data.EntityState.Deleted;
-                    dbcontext.SaveChanges();
+                    var result=(from a in dbcontext.Test_Accounts
+                     join mr in dbcontext.Meter_Reading
+                     on a.AccountId equals mr.AccountId
+                     where a.AccountId == accountId
+                     select a).FirstOrDefault();
+                    if (result == null)
+                    {
+                        var ta = dbcontext.Test_Accounts.Where(s => s.AccountId == accountId).FirstOrDefault();
+                        dbcontext.Entry(ta).State = System.Data.EntityState.Deleted;
+                        recordsaffected=dbcontext.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
@@ -35,14 +43,13 @@ namespace ENSEK_MeterReading.Models.DAL
                 {
                     using (var dbcontext = new ENSEKMeterReadingEntities())
                     {
-                        var rowinDB = dbcontext.Test_Accounts.Where(s => (s.AccountId == ta.AccountId) && (s.FirstName == ta.FirstName && (s.LastName == ta.LastName))).FirstOrDefault() ;
+                        var rowinDB = dbcontext.Test_Accounts.Where(s => (s.AccountId == ta.AccountId)).FirstOrDefault() ;
                         if (rowinDB != null)
                         {
-                            //rowinDB.AccountId = ta.AccountId;
+                            rowinDB.AccountId = ta.AccountId;
                             rowinDB.FirstName = ta.FirstName;
-                            rowinDB.LastName = ta.LastName;
-                          
-                            dbcontext.Test_Accounts.Add(rowinDB);
+                            rowinDB.LastName = ta.LastName;                          
+                            
                             recordsaffected = dbcontext.SaveChanges();
                         }
                     }

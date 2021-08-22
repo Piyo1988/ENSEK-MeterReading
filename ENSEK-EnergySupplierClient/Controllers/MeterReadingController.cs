@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,7 +18,7 @@ namespace ENSEK_EnergySupplierClient.Controllers
         }
         // GET: MeterReading
         [HttpPost]
-        public ActionResult PostBulkMeterReadingFileToAPI(HttpPostedFileBase file)
+        public async Task<ActionResult> PostBulkMeterReadingFileToAPI(HttpPostedFileBase file)
         {
             if (file != null)
             {
@@ -30,7 +31,7 @@ namespace ENSEK_EnergySupplierClient.Controllers
                         var filecontent = new ByteArrayContent(bytes);
                         filecontent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment") { FileName = file.FileName };
                         content.Add(filecontent);
-                        var result = client.PostAsync(baseurl + "api/Meter/PostBulkMeterReading", content).Result;
+                        var result = await client.PostAsync(baseurl + "api/Meter/PostBulkMeterReading", content);
                         if (result.IsSuccessStatusCode)
                         {
                            ViewBag.Response= result.Content.ReadAsStringAsync().Result;

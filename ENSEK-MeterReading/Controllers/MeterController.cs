@@ -39,7 +39,7 @@ namespace ENSEK_MeterReading.Controllers
             }
             catch(Exception ex)
             {
-                 return (IHttpActionResult)Request.CreateErrorResponse(HttpStatusCode.InternalServerError,string.Format("Unable to fetch Accounts information from the database. Error Message- {0}",ex.Message));
+                return InternalServerError(new Exception(ex.Message));
             }
         }
 
@@ -56,7 +56,7 @@ namespace ENSEK_MeterReading.Controllers
             }
             catch (Exception ex)
             {
-                return (IHttpActionResult)Request.CreateErrorResponse(HttpStatusCode.InternalServerError, string.Format("Unable to fetch Accounts information from the database. Error Message- {0}", ex.Message));
+                return InternalServerError(new Exception(ex.Message));
             }
         }
 
@@ -79,7 +79,7 @@ namespace ENSEK_MeterReading.Controllers
             }
             catch (Exception ex)
             {
-                return (IHttpActionResult)Request.CreateErrorResponse(HttpStatusCode.InternalServerError, string.Format("Unable to fetch Accounts information from the database. Error Message- {0}", ex.Message));
+                return InternalServerError(new Exception(ex.Message));
             }
         }
 
@@ -101,7 +101,8 @@ namespace ENSEK_MeterReading.Controllers
             }
             catch (Exception ex)
             {
-                return (IHttpActionResult)Request.CreateErrorResponse(HttpStatusCode.InternalServerError, string.Format("Unable to fetch Accounts information from the database. Error Message- {0}", ex.Message));
+                return InternalServerError(new Exception(ex.Message));
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, string.Format("Unable to fetch Accounts information from the database. Error Message- {0}", ex.Message));
             }
         }
 
@@ -112,14 +113,15 @@ namespace ENSEK_MeterReading.Controllers
             try
             {
                 result = BLservice.DeleteTestAccount(accountId);
-                if (result > 0)
+                if (result !=-1)
                     return Ok(result);
                 else
                     return BadRequest("Record with Account ID - " + accountId + "not deleted in the database");
             }
             catch (Exception ex)
             {
-                return (IHttpActionResult)Request.CreateErrorResponse(HttpStatusCode.InternalServerError, string.Format("Unable to fetch Accounts information from the database. Error Message- {0}", ex.Message));
+                return InternalServerError(new Exception(ex.Message));
+               
             }
         }
         public void Post([FromBody] string value)
@@ -150,8 +152,10 @@ namespace ENSEK_MeterReading.Controllers
             {
                 var serverUploadPath = HttpContext.Current.Server.MapPath(@"~/FileUploads");
 
-                var provider = new MultipartFileStreamProvider(serverUploadPath);
+                //deleting old files if any
+                Array.ForEach(Directory.GetFiles(serverUploadPath), File.Delete);
 
+                var provider = new MultipartFileStreamProvider(serverUploadPath);
                 
                 try
                 {
@@ -196,11 +200,7 @@ namespace ENSEK_MeterReading.Controllers
                                         if (meterreadingrecord == null)
                                             md.Add(new MeterReading() { AccountId = accountID, MeterReadingDateTime = meterReadingTime, MeterReadValue = metervalue }); 
                                     }
-                                }
-                                //else
-                                //{                                    
-                                //    continue;
-                                //}
+                                }                               
                             }                           
 
                             //remove the file after its use and use the list object instead for further processing
@@ -212,7 +212,7 @@ namespace ENSEK_MeterReading.Controllers
                               successfullReadingCnt = BLservice.PostMeterReadingForAccounts(md);
                                 if (successfullReadingCnt > 0)
                                 {
-                                    return string.Format("The number of successful readings - {0} and failed readings - {1}", successfullReadingCnt, md.Count - successfullReadingCnt);
+                                    return string.Format("The number of successful readings - {0} and failed readings - {1}", successfullReadingCnt, filecontents.Length - successfullReadingCnt);
                                 }
                                 else
                                 {
