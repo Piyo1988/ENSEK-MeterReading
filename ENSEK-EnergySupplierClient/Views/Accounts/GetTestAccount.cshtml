@@ -1,0 +1,42 @@
+﻿@model ENSEK_EnergySupplierClient.Models.TestAccount
+
+@{
+    ViewBag.Title = "GetTestAccount";
+}
+
+<h2>GetTestAccount</h2>
+
+<div>
+    <h4>TestAccount</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "EditTestAccount", new {accountId = Model.AccountId }) |
+    @Html.ActionLink("Back to List", "GetAllTestAccounts")
+</p>

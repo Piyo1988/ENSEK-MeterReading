@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ENSEK_EnergySupplierClient.Models.TestAccount>
+
+@{
+    ViewBag.Title = "GetAllTestAccounts";
+}
+
+<h2>GetAllTestAccounts</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AccountId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AccountId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditTestAccount", new { accountId = item.AccountId }) |
+            @Html.ActionLink("Details", "GetTestAccount", new {  accountId=item.AccountId  }) |
+            @Html.ActionLink("Delete", "DeleteTestAccount", new { accountId = item.AccountId })
+        </td>
+    </tr>
+}
+
+</table>
